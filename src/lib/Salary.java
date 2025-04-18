@@ -1,5 +1,6 @@
 package lib;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 public class Salary {
@@ -16,6 +17,28 @@ public class Salary {
     public void setMonthlySalary(int grade, boolean isForeigner) {
         int baseSalary = BASE_SALARY_MAP.getOrDefault(grade, 0);
         monthlySalary = isForeigner ? (int) (baseSalary * 0.5) : baseSalary;
+    }
+
+    public int calculateAnnualTax(Family family, LocalDate joinDate) {
+        int monthWorkingInYear;
+        LocalDate now = LocalDate.now();
+
+        if (now.getYear() == joinDate.getYear()) {
+            monthWorkingInYear = now.getMonthValue() - joinDate.getMonthValue();
+        } else {
+            monthWorkingInYear = 12;
+        }
+
+        TaxCalculationData data = new TaxCalculationData(
+            this.monthlySalary,
+            this.otherMonthlyIncome,
+            monthWorkingInYear,
+            this.annualDeductible,
+            family.hasSpouse(),
+            family.getNumberOfChildren()
+        );
+
+        return TaxFunction.calculateTax(data);
     }
 
     public void setAdditionalIncome(int income) {
