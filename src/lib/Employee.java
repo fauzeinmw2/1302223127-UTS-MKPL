@@ -20,16 +20,9 @@ public class Employee {
 	
 	private boolean isForeigner;
 	private boolean gender; //true = Laki-laki, false = Perempuan
-	
-	private int monthlySalary;
-	private int otherMonthlyIncome;
-	private int annualDeductible;
-	
-	private String spouseName;
-	private String spouseIdNumber;
 
-	private List<String> childNames;
-	private List<String> childIdNumbers;
+	private Salary salary = new Salary();
+	private Family family = new Family();
 	
 	public Employee(String employeeId, String firstName, String lastName, String idNumber, String address, int yearJoined, int monthJoined, int dayJoined, boolean isForeigner, boolean gender) {
 		this.employeeId = employeeId;
@@ -42,9 +35,6 @@ public class Employee {
 		this.dayJoined = dayJoined;
 		this.isForeigner = isForeigner;
 		this.gender = gender;
-		
-		childNames = new LinkedList<String>();
-		childIdNumbers = new LinkedList<String>();
 	}
 	
 	/**
@@ -52,41 +42,24 @@ public class Employee {
 	 * Jika pegawai adalah warga negara asing gaji bulanan diperbesar sebanyak 50%
 	 */
 	
-	public void setMonthlySalary(int grade) {	
-		if (grade == 1) {
-			monthlySalary = 3000000;
-			if (isForeigner) {
-				monthlySalary = (int) (3000000 * 1.5);
-			}
-		}else if (grade == 2) {
-			monthlySalary = 5000000;
-			if (isForeigner) {
-				monthlySalary = (int) (3000000 * 1.5);
-			}
-		}else if (grade == 3) {
-			monthlySalary = 7000000;
-			if (isForeigner) {
-				monthlySalary = (int) (3000000 * 1.5);
-			}
-		}
+	public void setMonthlySalary(int grade) {
+		salary.setMonthlySalary(grade, isForeigner);
 	}
 	
-	public void setAnnualDeductible(int deductible) {	
-		this.annualDeductible = deductible;
+	public void setAnnualDeductible(int deductible) {
+		salary.setAnnualDeductible(deductible);
 	}
 	
-	public void setAdditionalIncome(int income) {	
-		this.otherMonthlyIncome = income;
+	public void setAdditionalIncome(int income) {
+		salary.setAdditionalIncome(income);
 	}
 	
-	public void setSpouse(String spouseName, String spouseIdNumber) {
-		this.spouseName = spouseName;
-		this.spouseIdNumber = idNumber;
+	public void setSpouse(String name, String id) {
+		family.setSpouse(name, id);
 	}
 	
-	public void addChild(String childName, String childIdNumber) {
-		childNames.add(childName);
-		childIdNumbers.add(childIdNumber);
+	public void addChild(String name, String id) {
+		family.addChild(name, id);
 	}
 	
 	public int getAnnualIncomeTax() {
@@ -100,6 +73,13 @@ public class Employee {
 			monthWorkingInYear = 12;
 		}
 		
-		return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
+		return TaxFunction.calculateTax(
+			salary.getMonthlySalary(),
+			salary.getOtherMonthlyIncome(),
+			monthWorkingInYear,
+			salary.getAnnualDeductible(),
+			family.hasSpouse(),
+			family.getNumberOfChildren()
+		);
 	}
 }
