@@ -73,13 +73,13 @@ public class Employee {
 			monthWorkingInYear = 12;
 		}
 		
-		return TaxFunction.calculateTax(
+		return TaxFunction.calculateTax(new TaxCalculationData(
 			salary.getMonthlySalary(),
 			salary.getOtherMonthlyIncome(),
 			monthWorkingInYear,
 			salary.getAnnualDeductible(),
 			family.hasSpouse(),
 			family.getNumberOfChildren()
-		);
+		));
 	}
 }
