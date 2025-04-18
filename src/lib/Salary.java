@@ -1,25 +1,21 @@
 package lib;
 
+import java.util.Map;
+
 public class Salary {
     private int monthlySalary;
     private int otherMonthlyIncome;
     private int annualDeductible;
 
+    private static final Map<Integer, Integer> BASE_SALARY_MAP = Map.of(
+        1, 3000000,
+        2, 5000000,
+        3, 7000000
+    );
+
     public void setMonthlySalary(int grade, boolean isForeigner) {
-        switch (grade) {
-            case 1:
-                monthlySalary = isForeigner ? (int)(3000000 * 0.5) : 3000000;
-                break;
-            case 2:
-                monthlySalary = isForeigner ? (int)(5000000 * 0.5) : 5000000;
-                break;
-            case 3:
-                monthlySalary = isForeigner ? (int)(7000000 * 0.5) : 7000000;
-                break;
-        
-            default:
-                break;
-        }
+        int baseSalary = BASE_SALARY_MAP.getOrDefault(grade, 0);
+        monthlySalary = isForeigner ? (int) (baseSalary * 0.5) : baseSalary;
     }
 
     public void setAdditionalIncome(int income) {
